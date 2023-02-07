@@ -2,6 +2,7 @@
 import { IconBackspace, IconPlayerPlayFilled, IconPlayerStopFilled, IconTrash } from '@tabler/icons-vue'
 import { useHead } from '@vueuse/head'
 import { computed, ref, watch } from 'vue'
+import Tag from './components/Tag.vue'
 import { useStore } from './stores/counter'
 
 const store = useStore()
@@ -45,9 +46,12 @@ const historySum = computed(() => store.history.length > 0 ? store.history.reduc
 
 <template>
   <div class="w-full h-full min-h-screen flex justify-center items-center gap-4 flex-col">
+    <div class="flex justify-center gap-2">
+      <Tag v-for="(e, i) of store.recentRates" :key="i" :text="`${e}€`" @selected="store.hourlyRate = e" @deleted="store.recentRates.splice(i, 1)" />
+    </div>
     <div class="text-2xl">
       <span>Stundensatz:</span>
-      <input v-model="store.hourlyRate" type="number" placeholder="Geld pro Stunde" class="text-end w-16">
+      <input v-model.lazy="store.hourlyRate" type="number" placeholder="Geld pro Stunde" class="text-end w-16">
       <span>€</span>
     </div>
     <div class="text-2xl">
