@@ -18,7 +18,7 @@ watch(positive, () => {
 
 const calculateMoneys = computed(() => {
   if (!store.running)
-    return store.history?.at(-1) ?? 0
+    return store.history?.at(-1)?.amount ?? 0
   const time = currTime.value - store.startTime
   return store.hourlyRate * (time / (60 * 60 * 1000))
 })
@@ -41,7 +41,7 @@ const timeString = computed({
   },
 })
 
-const historySum = computed(() => store.history.length > 0 ? store.history.reduce((prev, curr) => prev + curr) : 0)
+const historySum = computed(() => store.history.length > 0 ? store.history.reduce((prev, curr) => prev + curr.amount, 0) : 0)
 </script>
 
 <template>
@@ -75,15 +75,17 @@ const historySum = computed(() => store.history.length > 0 ? store.history.reduc
       <IconTrash class="text-gray-400 h-6 w-6 cursor-pointer" @click="store.history = []" />
     </div>
     <div
-      class="relative h-64 text-2xl overflow-hidden after:absolute after:bg-gradient-to-t after:from-white after:to-transparent after:h-2/3 after:w-full after:bottom-0 w-36"
+      class="relative h-64 w-fit text-2xl overflow-hidden after:absolute after:bg-gradient-to-t after:from-white after:to-transparent after:h-2/3 after:w-full after:bottom-0"
     >
       <ul class="w-full">
-        <li v-for="(e, i) in [...store.history].reverse()" :key="i" class="w-full flex justify-between items-center">
+        <li v-for="(e, i) in [...store.history].reverse()" :key="i" class="w-full flex justify-between items-center whitespace-nowrap">
           <span>
-
-            {{ e.toFixed(2) }} €
+            {{ e.amount.toFixed(2) }} €
+            <span class="text-lg">
+              ({{ (e.duration / (60 * 60 * 1000)).toFixed(2) }}h @ {{ e.rate }}€)
+            </span>
           </span>
-          <IconBackspace class="h-6 w-6 text-gray-400" @click="store.history.splice(store.history.length - i - 1, 1)" />
+          <IconBackspace class="h-6 w-6 text-gray-400 ml-2" @click="store.history.splice(store.history.length - i - 1, 1)" />
         </li>
       </ul>
     </div>
