@@ -9,8 +9,10 @@ export const useStore = defineStore('data', () => {
   const history = ref<{ rate: number; duration: number; amount: number }[]>([])
 
   // eslint-disable-next-line no-prototype-builtins
-  if (history.value.length > 0 && !history.value[0].hasOwnProperty('rate'))
-    history.value.splice(0)
+  if (history.value.length > 0 && !history.value[0].hasOwnProperty('rate')) {
+    localStorage.clear()
+    location.reload()
+  }
 
   watch(hourlyRate, (curr, old) => {
     if (curr !== old && !recentRates.value.includes(curr))
