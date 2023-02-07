@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { IconBackspace, IconPlayerPlayFilled, IconPlayerStopFilled } from '@tabler/icons-vue'
-import { computed, ref } from 'vue'
+import { IconBackspace, IconPlayerPlayFilled, IconPlayerStopFilled, IconTrash } from '@tabler/icons-vue'
+import { useHead } from '@vueuse/head'
+import { computed, ref, watch } from 'vue'
 import { useStore } from './stores/counter'
 
 const store = useStore()
 const currTime = ref(0)
+const positive = ref(true)
+
+watch(positive, () => {
+  useHead({
+    link: [{ rel: 'icon', type: 'image/webp', href: positive.value ? '/gold.webp' : '/potato.webp', key: 'icon' }],
+    title: positive.value ? 'Reichtum' : 'Armut',
+  })
+}, { immediate: true })
 
 const calculateMoneys = computed(() => {
   if (!store.running)
@@ -15,6 +24,7 @@ const calculateMoneys = computed(() => {
 
 setInterval(() => {
   currTime.value = (new Date()).getTime()
+  positive.value = (calculateMoneys.value >= 0)
 }, 10)
 
 const timeString = computed({
@@ -28,8 +38,9 @@ const timeString = computed({
     date.setHours(input[0], input[1])
     store.startTime = date.getTime()
   },
-
 })
+
+const historySum = computed(() => store.history.reduce((prev, curr) => prev + curr))
 </script>
 
 <template>
@@ -54,6 +65,10 @@ const timeString = computed({
     </div>
     <div class="text-6xl">
       {{ calculateMoneys > 0 ? 'Reichtum' : 'Armut' }}: <span class="font-mono">{{ calculateMoneys.toFixed(2) }}<span class="text-4xl text-gray-400">{{ calculateMoneys.toFixed(5).substring(calculateMoneys.toFixed(5).length - 3) }}</span></span>€
+    </div>
+    <div class="flex gap-2 whitespace-nowrap">
+      Summe: {{ (historySum + (store.running ? calculateMoneys : 0)).toFixed(2) }}€
+      <IconTrash class="text-gray-400 h-6 w-6 cursor-pointer" @click="store.history = []" />
     </div>
     <div
       class="relative h-64 text-2xl overflow-hidden after:absolute after:bg-gradient-to-t after:from-white after:to-transparent after:h-2/3 after:w-full after:bottom-0 w-36"
