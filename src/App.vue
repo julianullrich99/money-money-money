@@ -53,7 +53,7 @@ const timeString = computed({
       <IconPlayerStopFilled class="h-full w-10" />
     </div>
     <div class="text-6xl">
-      {{ calculateMoneys > 0 ? 'Reichtum' : 'Armut' }}: {{ calculateMoneys.toFixed(2) }}<span class="text-4xl text-gray-400">{{ calculateMoneys.toFixed(5).substring(calculateMoneys.toFixed(5).length - 3) }}</span>€
+      {{ calculateMoneys > 0 ? 'Reichtum' : 'Armut' }}: <span class="font-mono">{{ calculateMoneys.toFixed(2) }}<span class="text-4xl text-gray-400">{{ calculateMoneys.toFixed(5).substring(calculateMoneys.toFixed(5).length - 3) }}</span></span>€
     </div>
     <div
       class="relative h-64 text-2xl overflow-hidden after:absolute after:bg-gradient-to-t after:from-white after:to-transparent after:h-2/3 after:w-full after:bottom-0 w-36"
