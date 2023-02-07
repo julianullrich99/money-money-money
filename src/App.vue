@@ -40,7 +40,7 @@ const timeString = computed({
   },
 })
 
-const historySum = computed(() => store.history.reduce((prev, curr) => prev + curr))
+const historySum = computed(() => store.history.length > 0 ? store.history.reduce((prev, curr) => prev + curr) : 0)
 </script>
 
 <template>
